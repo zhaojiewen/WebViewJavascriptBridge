@@ -2,14 +2,14 @@
 An iOS/macOS bridge for sending messages between Swift and JavaScript in UIWebViews, WebViews, WKWebViews
 
 
-Installation (iOS & OSX)
+Installation (iOS & macOS)
 ------------------------
 
 ### Installation with CocoaPods
 Add this to your [podfile](https://guides.cocoapods.org/using/getting-started.html) and run `pod install` to install:
 
 ```ruby
-pod 'WebViewJavascriptBridge', '~> 6.0'
+pod 'WebViewJavascriptBridge'
 ```
 ### Manual installation
 
@@ -86,7 +86,7 @@ API Reference
 
 ### Swift API
 
-##### `WebViewJavascriptBridge.bridge(forWebView: webView:UIWebView/WebView) or  WKWebViewJavascriptBridge.bridge(forWebView: webView:WKWebView) `
+##### `WebViewJavascriptBridge.bridge(forWebView: webView:UIWebView/WebView) or   WKWebViewJavascriptBridge.bridge(forWebView: webView:WKWebView) `
 
 Create a javascript bridge for the given web view.
 
