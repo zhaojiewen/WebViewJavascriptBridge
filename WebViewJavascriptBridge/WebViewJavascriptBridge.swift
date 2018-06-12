@@ -11,7 +11,6 @@ import WebKit
 
 #if os(iOS)
 
-let WVJB_PLATFORM_IOS = true
 import UIKit
 public typealias WVJB_WEBVIEW_TYPE = UIWebView
 public typealias WVJB_WEBVIEW_DELEGATE_TYPE = UIWebViewDelegate
@@ -20,7 +19,7 @@ public typealias WVJB_WEBVIEW_DELEGATE_INTERFACE = WVJB_WEBVIEW_DELEGATE_TYPE
 #else
 
 import AppKit
-let WVJB_PLATFORM_OSX = true
+
 public typealias WVJB_WEBVIEW_TYPE = WebView
 public typealias WVJB_WEBVIEW_DELEGATE_TYPE = WebPolicyDelegate
 public typealias WVJB_WEBVIEW_DELEGATE_INTERFACE = WVJB_WEBVIEW_DELEGATE_TYPE
@@ -28,73 +27,67 @@ public typealias WVJB_WEBVIEW_DELEGATE_INTERFACE = WVJB_WEBVIEW_DELEGATE_TYPE
 #endif
 
 
-class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeBaseProtocol,WVJB_WEBVIEW_DELEGATE_INTERFACE {
-    
+class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WebViewJavascriptBridgeBaseProtocol,WVJB_WEBVIEW_DELEGATE_INTERFACE {
     private weak var _webView :WVJB_WEBVIEW_TYPE?
     private var _uniqueId : Int = 0
     private var _base : WebViewJavascriptBridgeBase?
     
-    weak var webViewDelegate : WVJB_WEBVIEW_DELEGATE_TYPE?
+    weak var webViewDelegate : AnyObject?
 
     func _evaluateJavascript(_ javascriptCommand: String) -> String {
         return _webView?.stringByEvaluatingJavaScript(from: javascriptCommand) ?? ""
     }
     
-    static open func enableLoggging() -> Void {
+    static func enableLogging() -> Void {
         WebViewJavascriptBridgeBase.enableLogging()
     }
     
-    static open func setLogMax(length:Int) {
+    static func setLogMax(length:Int) {
         WebViewJavascriptBridgeBase.setLogMax(length: length)
     }
     
-    static open func bridge(_ webView:Any) -> Any {
-        //support WKWebView
-        if #available(iOS 7.1,macOS 10.9,*),let wk_webView = webView as? WKWebView {
-            return WKWebViewJavascriptBridge.bridge(forWebView: wk_webView)
-        }
+    static private func bridge(_ webView:Any) -> WebViewJavascriptBridge? {
         if let wv_webView = webView as? WVJB_WEBVIEW_TYPE {
             let bridge = WebViewJavascriptBridge()
             bridge._platformSpecificSetup(wv_webView)
             return bridge
         }
-        
         fatalError("BadWebViewType:Unknown web view type.")
     }
     
-    static open func bridge(forWebView webView:Any) -> Any {
+    static func bridge(forWebView webView:Any) -> WebViewJavascriptBridge? {
         return bridge(webView)
     }
     
-    open func send(_ data:Any?) {
+    private func send(_ data:Any?) {
         send(data, responseCallback: nil)
     }
     
-    open func send(_ data:Any?,responseCallback:WVJBResponseCallback?) {
+    private func send(_ data:Any?,responseCallback:WVJBResponseCallback?) {
         _base?.send(data: data, responseCallback: responseCallback, handlerName: nil)
     }
     
-    open func callHandler(handlerName:String?) {
+    func callHandler(handlerName:String?) {
         callHandler(handlerName: handlerName, data: nil)
     }
     
-    open func callHandler(handlerName:String?, data:Any?){
+    func callHandler(handlerName:String?, data:Any?){
         callHandler(handlerName: handlerName, data: data, responseCallback: nil)
     }
     
-    open func callHandler(handlerName:String?, data:Any?,responseCallback:WVJBResponseCallback?){
+    func callHandler(handlerName:String?, data:Any?,responseCallback:WVJBResponseCallback?){
         _base?.send(data: data, responseCallback: responseCallback, handlerName: handlerName)
     }
     
-    open func registerHandler(handlerName:String,handler:@escaping WVJBHandler){
+    func registerHandler(handlerName:String,handler:@escaping WVJBHandler){
         _base?.messageHandlers?[handlerName] = handler
     }
     
-    open func removeHandler(handlerName:String){
+    func removeHandler(handlerName:String){
         _base?.messageHandlers?.removeValue(forKey: handlerName)
     }
     
-    open func disableJavascriptAlertBoxSafetyTimeout(){
+    func disableJavascriptAlertBoxSafetyTimeout(){
         _base?.disableJavscriptAlertBoxSafetyTimeout()
     }
     
@@ -164,7 +157,7 @@ class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeBaseProtocol,WVJB
     }
     
     #else
-    /* Platform specific internals: OSX
+    /* Platform specific internals: macOS
      **********************************/
     private func _platformSpecificSetup(_ webView:WVJB_WEBVIEW_TYPE) {
         _webView = webView
@@ -179,10 +172,12 @@ class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeBaseProtocol,WVJB
     
     func webView(_ webView: WebView!, decidePolicyForNavigationAction actionInformation: [AnyHashable : Any]!, request: URLRequest!, frame: WebFrame!, decisionListener listener: WebPolicyDecisionListener!) {
         if  webView != _webView {
+            listener.use()
             return
         }
         guard let url = request.url else {
-            return false
+            listener.ignore()
+            return
         }
         
         if _base!.isWebViewJavascriptBridgeURL(url) {
@@ -195,12 +190,13 @@ class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeBaseProtocol,WVJB
                 _base!.logUnknownMessage(url)
             }
             listener.ignore()
-        }else if webViewDelegate != nil && webViewDelegate!.responds(to: #selector(webView(_:decidePolicyForNavigationAction:request:frame:decisionListener:))) {
-            return webViewDelegate!.webView!(webView, decidePolicyForNavigationAction: actionInformation,request: request, frame: frame, decisionListener: listener)!
-        }else {
-            listener.use()
+            return
         }
         
+        guard webViewDelegate?.webView?(webView, decidePolicyForNavigationAction: actionInformation,request: request, frame: frame, decisionListener: listener) != nil else {
+            listener.use()
+            return
+        }
     }
     #endif
 }

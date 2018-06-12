@@ -18,6 +18,24 @@ typealias WVJBResponseCallback = (Any?) -> Swift.Void
 typealias WVJBHandler = (Any?,@escaping WVJBResponseCallback) -> Swift.Void
 typealias WVJBMessage = Dictionary<String, Any>
 
+protocol WebViewJavascriptBridgeAPIProtocol : NSObjectProtocol {
+    associatedtype Bridge
+    
+    static func bridge(forWebView webView:Any) -> Bridge
+    
+    static func enableLogging() -> Void
+    static func setLogMax(length:Int)
+    
+    func callHandler(handlerName:String?)
+    func callHandler(handlerName:String?, data:Any?)
+    func callHandler(handlerName:String?, data:Any?,responseCallback:WVJBResponseCallback?)
+    func registerHandler(handlerName:String,handler:@escaping WVJBHandler)
+    func removeHandler(handlerName:String)
+    func disableJavascriptAlertBoxSafetyTimeout()
+
+    var webViewDelegate:AnyObject? {get set}
+}
+
 protocol WebViewJavascriptBridgeBaseProtocol:NSObjectProtocol {
     @discardableResult func _evaluateJavascript(_ javascriptCommand:String) -> String
 }
@@ -110,7 +128,7 @@ class WebViewJavascriptBridgeBase: NSObject {
                         if msg_responseData == nil {
                             msg_responseData = "null"
                         }
-                        let msg : WVJBMessage = ["responseId":callbackId,"responseData":responseData]
+                        let msg : WVJBMessage = ["responseId":callbackId,"responseData":responseData ?? ""]
                         self._queue(message: msg)
                     }
                 }
@@ -200,7 +218,7 @@ class WebViewJavascriptBridgeBase: NSObject {
         messageJSON = messageJSON.replacingOccurrences(of: "\u{2029}", with: "\\u{2029}")
         
         let javascriptCommand = "WebViewJavascriptBridge._handleMessageFromObjC('\(messageJSON)');"
-        DispatchQueue.main.sync{
+        DispatchQueue.main.async{
             self._evaluateJavascript(javascriptCommand: javascriptCommand)
         }
     }

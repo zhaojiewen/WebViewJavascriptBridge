@@ -9,22 +9,30 @@
 import Foundation
 import WebKit
 
-class WKWebViewJavascriptBridge: NSObject,WKNavigationDelegate,WebViewJavascriptBridgeBaseProtocol {
+@available(iOS 7.1,OSX 10.10, *)
+class WKWebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WKNavigationDelegate,WebViewJavascriptBridgeBaseProtocol {
     
     private weak var _webView : WKWebView?
-    weak var webViewDelegate : WKNavigationDelegate?
+    weak var webViewDelegate : AnyObject?
     var _uniqueId : Int = 0
     var _base : WebViewJavascriptBridgeBase?
     
-    static func enableLogging(){
+    static open func enableLogging(){
         WebViewJavascriptBridgeBase.enableLogging()
     }
     
-    static func bridge(forWebView webView:WKWebView) -> WKWebViewJavascriptBridge{
-        let bridge = WKWebViewJavascriptBridge()
-        bridge._setupInstance(webView)
-        bridge.reset()
-        return bridge
+    static func setLogMax(length:Int) {
+        WebViewJavascriptBridgeBase.setLogMax(length: length)
+    }
+    
+    static func bridge(forWebView webView:Any) -> WKWebViewJavascriptBridge?{
+        if let wk_webView = webView as? WKWebView {
+            let bridge = WKWebViewJavascriptBridge()
+            bridge._setupInstance(wk_webView)
+            bridge.reset()
+            return bridge
+        }
+        return nil
     }
     
     func reset() {
@@ -38,35 +46,35 @@ class WKWebViewJavascriptBridge: NSObject,WKNavigationDelegate,WebViewJavascript
         _base!.delegate = self
     }
     
-    open func send(_ data:Any?) {
+    private func send(_ data:Any?) {
         send(data, responseCallback: nil)
     }
     
-    open func send(_ data:Any?,responseCallback:WVJBResponseCallback?) {
+    private func send(_ data:Any?,responseCallback:WVJBResponseCallback?) {
         _base?.send(data: data, responseCallback: responseCallback, handlerName: nil)
     }
     
-    open func callHandler(handlerName:String?) {
+    func callHandler(handlerName:String?) {
         callHandler(handlerName: handlerName, data: nil)
     }
     
-    open func callHandler(handlerName:String?, data:Any?){
+    func callHandler(handlerName:String?, data:Any?){
         callHandler(handlerName: handlerName, data: data, responseCallback: nil)
     }
     
-    open func callHandler(handlerName:String?, data:Any?,responseCallback:WVJBResponseCallback?){
+    func callHandler(handlerName:String?, data:Any?,responseCallback:WVJBResponseCallback?){
         _base?.send(data: data, responseCallback: responseCallback, handlerName: handlerName)
     }
     
-    open func registerHandler(handlerName:String,handler:@escaping WVJBHandler){
+    func registerHandler(handlerName:String,handler:@escaping WVJBHandler){
         _base?.messageHandlers?[handlerName] = handler
     }
     
-    open func removeHandler(handlerName:String){
+    func removeHandler(handlerName:String){
         _base?.messageHandlers?.removeValue(forKey: handlerName)
     }
     
-    open func disableJavascriptAlertBoxSafetyTimeout(){
+    func disableJavascriptAlertBoxSafetyTimeout(){
         _base?.disableJavscriptAlertBoxSafetyTimeout()
     }
     
@@ -142,6 +150,7 @@ class WKWebViewJavascriptBridge: NSObject,WKNavigationDelegate,WebViewJavascript
                 _base?.logUnknownMessage(url)
             }
             decisionHandler(.cancel)
+            return
         }
         
         guard webViewDelegate?.webView?(webView, decidePolicyFor: navigationAction, decisionHandler: decisionHandler) != nil else {
