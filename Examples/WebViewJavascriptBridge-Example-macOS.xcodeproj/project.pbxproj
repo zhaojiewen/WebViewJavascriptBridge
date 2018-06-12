@@ -12,10 +12,10 @@
 		9174700220CFA47B00B59DA5 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9174700020CFA47B00B59DA5 /* MainMenu.xib */; };
 		9174701420CFADB900B59DA5 /* ExampleApp.html in Resources */ = {isa = PBXBuildFile; fileRef = 9174701320CFADB900B59DA5 /* ExampleApp.html */; };
 		9174701720CFAE5B00B59DA5 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9174701620CFAE5B00B59DA5 /* WebKit.framework */; };
-		9174701D20CFC85400B59DA5 /* WebViewJavascriptBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9174701920CFC85400B59DA5 /* WebViewJavascriptBridge.swift */; };
-		9174701E20CFC85400B59DA5 /* WebViewJavascriptBridge_JS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9174701A20CFC85400B59DA5 /* WebViewJavascriptBridge_JS.swift */; };
-		9174701F20CFC85400B59DA5 /* WKWebViewJavascriptBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9174701B20CFC85400B59DA5 /* WKWebViewJavascriptBridge.swift */; };
-		9174702020CFC85400B59DA5 /* WebViewJavascriptBridgeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9174701C20CFC85400B59DA5 /* WebViewJavascriptBridgeBase.swift */; };
+		9174703820CFCE4A00B59DA5 /* WebViewJavascriptBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9174703420CFCE4A00B59DA5 /* WebViewJavascriptBridge.swift */; };
+		9174703920CFCE4A00B59DA5 /* WebViewJavascriptBridge_JS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9174703520CFCE4A00B59DA5 /* WebViewJavascriptBridge_JS.swift */; };
+		9174703A20CFCE4A00B59DA5 /* WKWebViewJavascriptBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9174703620CFCE4A00B59DA5 /* WKWebViewJavascriptBridge.swift */; };
+		9174703B20CFCE4A00B59DA5 /* WebViewJavascriptBridgeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9174703720CFCE4A00B59DA5 /* WebViewJavascriptBridgeBase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,10 +27,10 @@
 		9174700420CFA47B00B59DA5 /* WebViewJavascriptBridge_Example_macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WebViewJavascriptBridge_Example_macOS.entitlements; sourceTree = "<group>"; };
 		9174701320CFADB900B59DA5 /* ExampleApp.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = ExampleApp.html; sourceTree = "<group>"; };
 		9174701620CFAE5B00B59DA5 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		9174701920CFC85400B59DA5 /* WebViewJavascriptBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewJavascriptBridge.swift; sourceTree = "<group>"; };
-		9174701A20CFC85400B59DA5 /* WebViewJavascriptBridge_JS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewJavascriptBridge_JS.swift; sourceTree = "<group>"; };
-		9174701B20CFC85400B59DA5 /* WKWebViewJavascriptBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WKWebViewJavascriptBridge.swift; sourceTree = "<group>"; };
-		9174701C20CFC85400B59DA5 /* WebViewJavascriptBridgeBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewJavascriptBridgeBase.swift; sourceTree = "<group>"; };
+		9174703420CFCE4A00B59DA5 /* WebViewJavascriptBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewJavascriptBridge.swift; sourceTree = "<group>"; };
+		9174703520CFCE4A00B59DA5 /* WebViewJavascriptBridge_JS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewJavascriptBridge_JS.swift; sourceTree = "<group>"; };
+		9174703620CFCE4A00B59DA5 /* WKWebViewJavascriptBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WKWebViewJavascriptBridge.swift; sourceTree = "<group>"; };
+		9174703720CFCE4A00B59DA5 /* WebViewJavascriptBridgeBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewJavascriptBridgeBase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,7 +65,7 @@
 		91746FFB20CFA47A00B59DA5 /* WebViewJavascriptBridge-Example-macOS */ = {
 			isa = PBXGroup;
 			children = (
-				9174701820CFC85400B59DA5 /* WebViewJavascriptBridge */,
+				9174703320CFCE4A00B59DA5 /* WebViewJavascriptBridge */,
 				9174701320CFADB900B59DA5 /* ExampleApp.html */,
 				91746FFC20CFA47A00B59DA5 /* AppDelegate.swift */,
 				91746FFE20CFA47B00B59DA5 /* Assets.xcassets */,
@@ -84,16 +84,17 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		9174701820CFC85400B59DA5 /* WebViewJavascriptBridge */ = {
+		9174703320CFCE4A00B59DA5 /* WebViewJavascriptBridge */ = {
 			isa = PBXGroup;
 			children = (
-				9174701920CFC85400B59DA5 /* WebViewJavascriptBridge.swift */,
-				9174701A20CFC85400B59DA5 /* WebViewJavascriptBridge_JS.swift */,
-				9174701B20CFC85400B59DA5 /* WKWebViewJavascriptBridge.swift */,
-				9174701C20CFC85400B59DA5 /* WebViewJavascriptBridgeBase.swift */,
+				9174703420CFCE4A00B59DA5 /* WebViewJavascriptBridge.swift */,
+				9174703520CFCE4A00B59DA5 /* WebViewJavascriptBridge_JS.swift */,
+				9174703620CFCE4A00B59DA5 /* WKWebViewJavascriptBridge.swift */,
+				9174703720CFCE4A00B59DA5 /* WebViewJavascriptBridgeBase.swift */,
 			);
-			path = WebViewJavascriptBridge;
-			sourceTree = SOURCE_ROOT;
+			name = WebViewJavascriptBridge;
+			path = ../../WebViewJavascriptBridge;
+			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
@@ -166,11 +167,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9174701E20CFC85400B59DA5 /* WebViewJavascriptBridge_JS.swift in Sources */,
-				9174702020CFC85400B59DA5 /* WebViewJavascriptBridgeBase.swift in Sources */,
-				9174701F20CFC85400B59DA5 /* WKWebViewJavascriptBridge.swift in Sources */,
+				9174703920CFCE4A00B59DA5 /* WebViewJavascriptBridge_JS.swift in Sources */,
+				9174703B20CFCE4A00B59DA5 /* WebViewJavascriptBridgeBase.swift in Sources */,
+				9174703A20CFCE4A00B59DA5 /* WKWebViewJavascriptBridge.swift in Sources */,
 				91746FFD20CFA47A00B59DA5 /* AppDelegate.swift in Sources */,
-				9174701D20CFC85400B59DA5 /* WebViewJavascriptBridge.swift in Sources */,
+				9174703820CFCE4A00B59DA5 /* WebViewJavascriptBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -21,6 +21,7 @@ class UIWebViewController: UINavigationController,UIWebViewDelegate {
         webView = UIWebView(frame: self.view.bounds)
         self.view.addSubview(webView!)
         WebViewJavascriptBridge.enableLogging()
+        
         bridge = WebViewJavascriptBridge.bridge(forWebView: webView) as? WebViewJavascriptBridge
         bridge?.webViewDelegate = self
         renderButton(webView!)
@@ -77,6 +78,7 @@ class UIWebViewController: UINavigationController,UIWebViewDelegate {
     func callHandler(sender:Any)  {
         let data = ["greetingFromObjC": "Hi there, JS!"]
         bridge?.callHandler(handlerName: "testJavascriptHandler", data: data, responseCallback: { (data) in
+            
             print("testJavascriptHandler responded: \(data)")
         })
     }
@@ -94,7 +96,7 @@ class UIWebViewController: UINavigationController,UIWebViewDelegate {
     func configBridge(){
         bridge?.registerHandler(handlerName: "testObjcCallback", handler: { (data, responseBack) in
             print("testObjcCallback called: \(String(describing: data))")
-            responseBack("Response from testObjcCallback")
+            responseBack(1111111111)
         })
         bridge?.callHandler(handlerName: "testJavascriptHandler", data: ["foo":"before ready"])
     }

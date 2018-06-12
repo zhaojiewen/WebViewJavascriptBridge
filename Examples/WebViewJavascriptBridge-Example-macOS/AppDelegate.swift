@@ -32,7 +32,6 @@ class AppDelegate: NSObject, NSApplicationDelegate,WebPolicyDelegate,WKNavigatio
             print("testObjcCallback called: \(String(describing: data))")
             responseCallBack("Response from testObjcCallback")
         })
-        
         bridge?.callHandler(handlerName: "testJavascriptHandler", data: ["foo":"before ready"])
         
         let callBackButton = NSButton(frame: NSRect(x: 5, y: 0, width: 120, height: 40))
