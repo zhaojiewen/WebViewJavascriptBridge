@@ -7,7 +7,7 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'WebViewJavascriptBridge'
+  s.name             = 'XHQWebViewJavascriptBridge'
   s.version          = '0.1.0'
   s.summary          = 'An iOS/macOS bridge for sending messages between Swift and JavaScript in UIWebViews, WebViews, WKWebViews'
 
@@ -18,20 +18,21 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
+An iOS/macOS bridge for sending messages between Swift and JavaScript in UIWebViews, WebViews, WKWebViews.
+WebViewJavascriptBridge using Swift language  according to Obj-C language WebViewJavascriptBridge
                        DESC
 
   s.homepage         = 'https://github.com/zhaojiewen/WebViewJavascriptBridge'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  s.author           = { 'xuhaiqing' => 'haiqingxu@creditease.cn' }
+  s.author           = { 'xuhaiqing' => '1716329344@qq.com' }
   s.source           = { :git => 'https://github.com/zhaojiewen/WebViewJavascriptBridge.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '2.0'
+  s.ios.deployment_target = '8.0'
 
   s.source_files = 'WebViewJavascriptBridge/**/*'
-  
+  s.swift_version = '4.0' 
   # s.resource_bundles = {
   #   'WebViewJavascriptBridge' => ['WebViewJavascriptBridge/Assets/*.png']
   # }

@@ -1,4 +1,9 @@
-# WebViewJavascriptBridge
+# XHQWebViewJavascriptBridge
+[![CI Status](https://img.shields.io/travis/xuhaiqing/WebViewJavascriptBridge.svg?style=flat)](https://travis-ci.org/xuhaiqing/WebViewJavascriptBridge)
+[![Version](https://img.shields.io/cocoapods/v/WebViewJavascriptBridge.svg?style=flat)](https://cocoapods.org/pods/WebViewJavascriptBridge)
+[![License](https://img.shields.io/cocoapods/l/WebViewJavascriptBridge.svg?style=flat)](https://cocoapods.org/pods/WebViewJavascriptBridge)
+[![Platform](https://img.shields.io/cocoapods/p/WebViewJavascriptBridge.svg?style=flat)](https://cocoapods.org/pods/WebViewJavascriptBridge)
+
 An iOS/macOS bridge for sending messages between Swift and JavaScript in UIWebViews, WebViews, WKWebViews
 
 
@@ -9,7 +14,7 @@ Installation (iOS & macOS)
 Add this to your [podfile](https://guides.cocoapods.org/using/getting-started.html) and run `pod install` to install:
 
 ```ruby
-pod 'WebViewJavascriptBridge'
+pod 'XHQWebViewJavascriptBridge'
 ```
 ### Manual installation
 
