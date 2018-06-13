@@ -1,10 +1,9 @@
 # XHQWebViewJavascriptBridge
-[![CI Status](https://img.shields.io/travis/xuhaiqing/WebViewJavascriptBridge.svg?style=flat)](https://travis-ci.org/xuhaiqing/WebViewJavascriptBridge)
-[![Version](https://img.shields.io/cocoapods/v/WebViewJavascriptBridge.svg?style=flat)](https://cocoapods.org/pods/WebViewJavascriptBridge)
-[![License](https://img.shields.io/cocoapods/l/WebViewJavascriptBridge.svg?style=flat)](https://cocoapods.org/pods/WebViewJavascriptBridge)
-[![Platform](https://img.shields.io/cocoapods/p/WebViewJavascriptBridge.svg?style=flat)](https://cocoapods.org/pods/WebViewJavascriptBridge)
+[![Version](https://img.shields.io/cocoapods/v/XHQWebViewJavascriptBridge.svg?style=flat)](https://cocoapods.org/pods/XHQWebViewJavascriptBridge)
+[![License](https://img.shields.io/cocoapods/l/XHQWebViewJavascriptBridge.svg?style=flat)](https://cocoapods.org/pods/XHQWebViewJavascriptBridge)
+[![Platform](https://img.shields.io/cocoapods/p/XHQWebViewJavascriptBridge.svg?style=flat)](https://cocoapods.org/pods/XHQWebViewJavascriptBridge)
 
-An iOS/macOS bridge for sending messages between Swift and JavaScript in UIWebViews, WebViews, WKWebViews
+An iOS/macOS bridge for sending messages between Swift and JavaScript in UIWebViews, WebViews, WKWebViews. According to [Obj-C and JavaScript](https://github.com/marcuswestin/WebViewJavascriptBridge), and fixxing some bugs.
 
 
 Installation (iOS & macOS)
@@ -189,3 +188,11 @@ Example:
 ```javascript
 bridge.disableJavscriptAlertBoxSafetyTimeout()
 ```
+
+## Author
+
+xuhaiqing, xuhaiqing007@gmail.com
+
+## License
+
+XHQWebViewJavascriptBridge is available under the MIT license. See the LICENSE file for more info.
