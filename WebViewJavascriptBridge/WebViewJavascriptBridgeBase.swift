@@ -24,17 +24,17 @@
 
 import Foundation
 
-struct WebViewBaseURI {
+public struct WebViewBaseURI {
     static public let scheme = "https"
     static public let queueHasMessage = "__wvjb_queue_message__"
     static public let bridgeLoaded = "__bridge_loaded__"
 }
 
-typealias WVJBResponseCallback = (Any?) -> Swift.Void
-typealias WVJBHandler = (Any?,@escaping WVJBResponseCallback) -> Swift.Void
-typealias WVJBMessage = Dictionary<String, Any>
+public typealias WVJBResponseCallback = (Any?) -> Swift.Void
+public typealias WVJBHandler = (Any?,@escaping WVJBResponseCallback) -> Swift.Void
+public typealias WVJBMessage = Dictionary<String, Any>
 
-protocol WebViewJavascriptBridgeAPIProtocol : NSObjectProtocol {
+public protocol WebViewJavascriptBridgeAPIProtocol : NSObjectProtocol {
     associatedtype Bridge
     
     static func bridge(forWebView webView:Any) -> Bridge
@@ -52,16 +52,16 @@ protocol WebViewJavascriptBridgeAPIProtocol : NSObjectProtocol {
     var webViewDelegate:AnyObject? {get set}
 }
 
-protocol WebViewJavascriptBridgeBaseProtocol:NSObjectProtocol {
+public protocol WebViewJavascriptBridgeBaseProtocol:NSObjectProtocol {
     @discardableResult func _evaluateJavascript(_ javascriptCommand:String) -> String
 }
 
-class WebViewJavascriptBridgeBase: NSObject {
-    open weak var delegate : WebViewJavascriptBridgeBaseProtocol?
-    open var startupMessageQueue : Array<WVJBMessage>?
-    open var responseCallbacks : Dictionary<String, WVJBResponseCallback>?
-    open var messageHandlers : Dictionary<String, WVJBHandler>?
-    open var messageHandler : WVJBMessage?
+public class WebViewJavascriptBridgeBase: NSObject {
+    public weak var delegate : WebViewJavascriptBridgeBaseProtocol?
+    public var startupMessageQueue : Array<WVJBMessage>?
+    public var responseCallbacks : Dictionary<String, WVJBResponseCallback>?
+    public var messageHandlers : Dictionary<String, WVJBHandler>?
+    public var messageHandler : WVJBMessage?
     
     private var _uniqueId:Int
     private weak var _webViewDelegate:AnyObject?
@@ -81,20 +81,20 @@ class WebViewJavascriptBridgeBase: NSObject {
         responseCallbacks = nil
     }
     
-    open static func enableLogging() {
+    public static func enableLogging() {
         logging = true
     }
     
-    open static func setLogMax(length:Int) {
+    public static func setLogMax(length:Int) {
         logMaxLength = length
     }
     
-    open func reset() {
+    public func reset() {
         startupMessageQueue = Array<WVJBMessage>()
         responseCallbacks = Dictionary<String, WVJBResponseCallback>()
     }
     
-    open func send(data:Any?,responseCallback:WVJBResponseCallback?,handlerName:String?){
+    public func send(data:Any?,responseCallback:WVJBResponseCallback?,handlerName:String?){
         var message = [String:Any]()
         if data != nil {
             message["data"] = data
@@ -113,7 +113,7 @@ class WebViewJavascriptBridgeBase: NSObject {
         _queue(message:message)
     }
     
-    open func flush(messageQueue:String?) {
+    public func flush(messageQueue:String?) {
         guard let messageQueueString:String = messageQueue, messageQueueString.count > 0 else {
             print("WebViewJavascriptBridge: WARNING: ObjC got nil while fetching the message queue JSON from webview. This can happen if the WebViewJavascriptBridge JS is not currently present in the webview, e.g if the webview just loaded a new page.")
             return
@@ -160,7 +160,7 @@ class WebViewJavascriptBridgeBase: NSObject {
         
     }
     
-    open func injectJavascriptFile() {
+    public func injectJavascriptFile() {
         _evaluateJavascript(javascriptCommand: WebViewJavascriptBridge_js)
         if self.startupMessageQueue != nil {
             let queue = self.startupMessageQueue!
@@ -171,38 +171,38 @@ class WebViewJavascriptBridgeBase: NSObject {
         }
     }
     
-    open func isWebViewJavascriptBridgeURL(_ url:URL) -> Bool {
+    public func isWebViewJavascriptBridgeURL(_ url:URL) -> Bool {
         if  !isSchemeMatch(url) {
             return false
         }
         return isQueueMessageURL(url) || isBridgeLoadedURL(url)
     }
     
-    open func isSchemeMatch(_ url:URL) -> Bool {
+    public func isSchemeMatch(_ url:URL) -> Bool {
         return url.scheme?.lowercased() == WebViewBaseURI.scheme
     }
     
-    open func isQueueMessageURL(_ url:URL) -> Bool {
+    public func isQueueMessageURL(_ url:URL) -> Bool {
         return isSchemeMatch(url) && url.host?.lowercased() == WebViewBaseURI.queueHasMessage
     }
     
-    open func isBridgeLoadedURL(_ url:URL) -> Bool {
+    public func isBridgeLoadedURL(_ url:URL) -> Bool {
         return isSchemeMatch(url) && url.host?.lowercased() == WebViewBaseURI.bridgeLoaded
     }
     
-    open func logUnknownMessage(_ url:URL) {
+    public func logUnknownMessage(_ url:URL) {
         print("WebViewJavascriptBridge: WARNING: Received unknown WebViewJavascriptBridge command \(url.absoluteString)")
     }
     
-    open func webViewJavascriptCheckCommand() -> String {
+    public func webViewJavascriptCheckCommand() -> String {
         return "typeof WebViewJavascriptBridge == \'object\';"
     }
     
-    open func webViewJavascriptFetchQueueCommand() -> String{
+    public func webViewJavascriptFetchQueueCommand() -> String{
         return "WebViewJavascriptBridge._fetchQueue();"
     }
     
-    open func disableJavscriptAlertBoxSafetyTimeout() {
+    public func disableJavscriptAlertBoxSafetyTimeout() {
         send(data: nil, responseCallback: nil, handlerName: "_disableJavascriptAlertBoxSafetyTimeout")
     }
     

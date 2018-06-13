@@ -211,6 +211,7 @@ class WKWebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WKN
         webViewDelegate?.webView?(webView, didReceiveServerRedirectForProvisionalNavigation: navigation)
     }
     
+    @available(iOS 9.0,OSX 10.11,*)
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
         if webView != _webView {
             return

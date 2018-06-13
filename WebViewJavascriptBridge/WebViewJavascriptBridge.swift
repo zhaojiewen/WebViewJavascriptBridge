@@ -43,22 +43,22 @@ public typealias WVJB_WEBVIEW_DELEGATE_INTERFACE = WVJB_WEBVIEW_DELEGATE_TYPE
 #endif
 
 
-class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WebViewJavascriptBridgeBaseProtocol,WVJB_WEBVIEW_DELEGATE_INTERFACE {
+public class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WebViewJavascriptBridgeBaseProtocol,WVJB_WEBVIEW_DELEGATE_INTERFACE {
     private weak var _webView :WVJB_WEBVIEW_TYPE?
     private var _uniqueId : Int = 0
     private var _base : WebViewJavascriptBridgeBase?
     
-    weak var webViewDelegate : AnyObject?
+    weak public var webViewDelegate : AnyObject?
 
-    func _evaluateJavascript(_ javascriptCommand: String) -> String {
+    public func _evaluateJavascript(_ javascriptCommand: String) -> String {
         return _webView?.stringByEvaluatingJavaScript(from: javascriptCommand) ?? ""
     }
     
-    static func enableLogging() -> Void {
+    public static func enableLogging() -> Void {
         WebViewJavascriptBridgeBase.enableLogging()
     }
     
-    static func setLogMax(length:Int) {
+    public static func setLogMax(length:Int) {
         WebViewJavascriptBridgeBase.setLogMax(length: length)
     }
     
@@ -71,7 +71,7 @@ class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WebVi
         fatalError("BadWebViewType:Unknown web view type.")
     }
     
-    static func bridge(forWebView webView:Any) -> WebViewJavascriptBridge? {
+    public static func bridge(forWebView webView:Any) -> WebViewJavascriptBridge? {
         return bridge(webView)
     }
     
@@ -83,27 +83,27 @@ class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WebVi
         _base?.send(data: data, responseCallback: responseCallback, handlerName: nil)
     }
     
-    func callHandler(handlerName:String?) {
+    public func callHandler(handlerName:String?) {
         callHandler(handlerName: handlerName, data: nil)
     }
     
-    func callHandler(handlerName:String?, data:Any?){
+    public func callHandler(handlerName:String?, data:Any?){
         callHandler(handlerName: handlerName, data: data, responseCallback: nil)
     }
     
-    func callHandler(handlerName:String?, data:Any?,responseCallback:WVJBResponseCallback?){
+    public func callHandler(handlerName:String?, data:Any?,responseCallback:WVJBResponseCallback?){
         _base?.send(data: data, responseCallback: responseCallback, handlerName: handlerName)
     }
     
-    func registerHandler(handlerName:String,handler:@escaping WVJBHandler){
+    public func registerHandler(handlerName:String,handler:@escaping WVJBHandler){
         _base?.messageHandlers?[handlerName] = handler
     }
     
-    func removeHandler(handlerName:String){
+    public func removeHandler(handlerName:String){
         _base?.messageHandlers?.removeValue(forKey: handlerName)
     }
     
-    func disableJavascriptAlertBoxSafetyTimeout(){
+    public func disableJavascriptAlertBoxSafetyTimeout(){
         _base?.disableJavscriptAlertBoxSafetyTimeout()
     }
     
@@ -127,21 +127,21 @@ class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WebVi
         _webView?.delegate = nil
     }
     
-    func webViewDidFinishLoad(_ webView: UIWebView) {
+    public func webViewDidFinishLoad(_ webView: UIWebView) {
         if webView != _webView {
             return
         }
         webViewDelegate?.webViewDidFinishLoad?(webView)
     }
     
-    func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
+    public func webView(_ webView: UIWebView, didFailLoadWithError error: Error) {
         if webView != _webView {
             return
         }
         webViewDelegate?.webView?(webView, didFailLoadWithError: error)
     }
     
-    func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+    public func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
         guard webView == _webView else {
             return true
         }
@@ -165,7 +165,7 @@ class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WebVi
         return shouldStart
     }
     
-    func webViewDidStartLoad(_ webView: UIWebView) {
+    public func webViewDidStartLoad(_ webView: UIWebView) {
         if webView != _webView {
             return
         }
@@ -186,7 +186,7 @@ class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WebVi
         _webView?.policyDelegate = nil
     }
     
-    func webView(_ webView: WebView!, decidePolicyForNavigationAction actionInformation: [AnyHashable : Any]!, request: URLRequest!, frame: WebFrame!, decisionListener listener: WebPolicyDecisionListener!) {
+    public func webView(_ webView: WebView!, decidePolicyForNavigationAction actionInformation: [AnyHashable : Any]!, request: URLRequest!, frame: WebFrame!, decisionListener listener: WebPolicyDecisionListener!) {
         if  webView != _webView {
             listener.use()
             return
