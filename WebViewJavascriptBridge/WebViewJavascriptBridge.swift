@@ -44,6 +44,9 @@ public typealias WVJB_WEBVIEW_DELEGATE_INTERFACE = WVJB_WEBVIEW_DELEGATE_TYPE
 
 
 public class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WebViewJavascriptBridgeBaseProtocol,WVJB_WEBVIEW_DELEGATE_INTERFACE {
+    public typealias B_WebView = WVJB_WEBVIEW_TYPE
+    public typealias Bridge = WebViewJavascriptBridge
+    
     private weak var _webView :WVJB_WEBVIEW_TYPE?
     private var _uniqueId : Int = 0
     private var _base : WebViewJavascriptBridgeBase?
@@ -61,20 +64,7 @@ public class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtoco
     public static func setLogMax(length:Int) {
         WebViewJavascriptBridgeBase.setLogMax(length: length)
     }
-    
-    static private func bridge(_ webView:Any) -> WebViewJavascriptBridge? {
-        if let wv_webView = webView as? WVJB_WEBVIEW_TYPE {
-            let bridge = WebViewJavascriptBridge()
-            bridge._platformSpecificSetup(wv_webView)
-            return bridge
-        }
-        fatalError("BadWebViewType:Unknown web view type.")
-    }
-    
-    public static func bridge(forWebView webView:Any) -> WebViewJavascriptBridge? {
-        return bridge(webView)
-    }
-    
+        
     private func send(_ data:Any?) {
         send(data, responseCallback: nil)
     }
@@ -110,6 +100,10 @@ public class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtoco
     deinit {
         _platformSpecificDealloc()
         _base = nil
+    }
+    
+    public func _setupInstance(_ webView: Any) {
+        _platformSpecificSetup(webView as! WVJB_WEBVIEW_TYPE)
     }
     
     

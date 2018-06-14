@@ -35,22 +35,31 @@ public typealias WVJBHandler = (Any?,@escaping WVJBResponseCallback) -> Swift.Vo
 public typealias WVJBMessage = Dictionary<String, Any>
 
 public protocol WebViewJavascriptBridgeAPIProtocol : NSObjectProtocol {
-    associatedtype Bridge
-    
-    static func bridge(forWebView webView:Any) -> Bridge
+    associatedtype Bridge:NSObject,WebViewJavascriptBridgeAPIProtocol
+    associatedtype B_WebView
     
     static func enableLogging() -> Void
     static func setLogMax(length:Int)
     
+    func _setupInstance(_ webView:Any)
     func callHandler(handlerName:String?)
     func callHandler(handlerName:String?, data:Any?)
     func callHandler(handlerName:String?, data:Any?,responseCallback:WVJBResponseCallback?)
     func registerHandler(handlerName:String,handler:@escaping WVJBHandler)
     func removeHandler(handlerName:String)
     func disableJavascriptAlertBoxSafetyTimeout()
-
+    
     var webViewDelegate:AnyObject? {get set}
+
 }
+extension WebViewJavascriptBridgeAPIProtocol {
+    public static func bridge(forWebView webView:B_WebView) -> Bridge{
+        let bridge = Self.Bridge()
+        bridge._setupInstance(webView)
+        return bridge
+    }
+}
+
 
 public protocol WebViewJavascriptBridgeBaseProtocol:NSObjectProtocol {
     @discardableResult func _evaluateJavascript(_ javascriptCommand:String) -> String

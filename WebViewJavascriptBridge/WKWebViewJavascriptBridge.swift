@@ -26,37 +26,29 @@ import Foundation
 import WebKit
 
 @available(iOS 7.1,OSX 10.10, *)
-class WKWebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WKNavigationDelegate,WebViewJavascriptBridgeBaseProtocol {
+public class WKWebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WKNavigationDelegate,WebViewJavascriptBridgeBaseProtocol {
+    public typealias B_WebView = WKWebView
+    public typealias Bridge = WKWebViewJavascriptBridge
     
     private weak var _webView : WKWebView?
-    weak var webViewDelegate : AnyObject?
+    public weak var webViewDelegate : AnyObject?
     var _uniqueId : Int = 0
     var _base : WebViewJavascriptBridgeBase?
     
-    static open func enableLogging(){
+    public static func enableLogging(){
         WebViewJavascriptBridgeBase.enableLogging()
     }
     
-    static func setLogMax(length:Int) {
+    public static func setLogMax(length:Int) {
         WebViewJavascriptBridgeBase.setLogMax(length: length)
-    }
-    
-    static func bridge(forWebView webView:Any) -> WKWebViewJavascriptBridge?{
-        if let wk_webView = webView as? WKWebView {
-            let bridge = WKWebViewJavascriptBridge()
-            bridge._setupInstance(wk_webView)
-            bridge.reset()
-            return bridge
-        }
-        return nil
     }
     
     func reset() {
         _base!.reset()
     }
     
-    private func _setupInstance(_ webView:WKWebView) {
-        _webView = webView
+    public func _setupInstance(_ webView:Any) {
+        _webView = webView as! WKWebView
         _webView!.navigationDelegate = self
         _base = WebViewJavascriptBridgeBase()
         _base!.delegate = self
@@ -70,31 +62,31 @@ class WKWebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WKN
         _base?.send(data: data, responseCallback: responseCallback, handlerName: nil)
     }
     
-    func callHandler(handlerName:String?) {
+    public func callHandler(handlerName:String?) {
         callHandler(handlerName: handlerName, data: nil)
     }
     
-    func callHandler(handlerName:String?, data:Any?){
+    public func callHandler(handlerName:String?, data:Any?){
         callHandler(handlerName: handlerName, data: data, responseCallback: nil)
     }
     
-    func callHandler(handlerName:String?, data:Any?,responseCallback:WVJBResponseCallback?){
+    public func callHandler(handlerName:String?, data:Any?,responseCallback:WVJBResponseCallback?){
         _base?.send(data: data, responseCallback: responseCallback, handlerName: handlerName)
     }
     
-    func registerHandler(handlerName:String,handler:@escaping WVJBHandler){
+    public func registerHandler(handlerName:String,handler:@escaping WVJBHandler){
         _base?.messageHandlers?[handlerName] = handler
     }
     
-    func removeHandler(handlerName:String){
+    public func removeHandler(handlerName:String){
         _base?.messageHandlers?.removeValue(forKey: handlerName)
     }
     
-    func disableJavascriptAlertBoxSafetyTimeout(){
+    public func disableJavascriptAlertBoxSafetyTimeout(){
         _base?.disableJavscriptAlertBoxSafetyTimeout()
     }
     
-    internal func _evaluateJavascript(_ javascriptCommand: String) -> String {
+    public func _evaluateJavascript(_ javascriptCommand: String) -> String {
         _webView!.evaluateJavaScript(javascriptCommand)
         return ""
     }
@@ -116,7 +108,7 @@ class WKWebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WKN
     }
     
     
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+    public func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         if webView != _webView {
             return
         }
@@ -124,7 +116,7 @@ class WKWebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WKN
     }
     
     
-    func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
         if webView != _webView {
             decisionHandler(.allow)
             return
@@ -136,7 +128,7 @@ class WKWebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WKN
         
     }
     
-    func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+    public func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
         if webView != _webView {
             completionHandler(.performDefaultHandling,nil)
             return
@@ -147,7 +139,7 @@ class WKWebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WKN
         }
     }
     
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if webView != _webView {
             decisionHandler(.allow)
             return
@@ -175,7 +167,7 @@ class WKWebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WKN
         }
     }
     
-    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+    public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         if webView != _webView {
             return
         }
@@ -183,28 +175,28 @@ class WKWebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WKN
         webViewDelegate?.webView?(webView, didCommit: navigation)
     }
     
-    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+    public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         if webView != _webView {
             return
         }
         webViewDelegate?.webView?(webView, didStartProvisionalNavigation: navigation)
     }
     
-    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+    public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         if webView != _webView {
             return
         }
         webViewDelegate?.webView?(webView, didFail: navigation, withError: error)
     }
     
-    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+    public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         if webView != _webView {
             return
         }
         webViewDelegate?.webView?(webView, didFailProvisionalNavigation: navigation, withError: error)
     }
     
-    func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
+    public func webView(_ webView: WKWebView, didReceiveServerRedirectForProvisionalNavigation navigation: WKNavigation!) {
         if webView != _webView {
             return
         }
@@ -212,7 +204,7 @@ class WKWebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtocol,WKN
     }
     
     @available(iOS 9.0,OSX 10.11,*)
-    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+    public func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
         if webView != _webView {
             return
         }

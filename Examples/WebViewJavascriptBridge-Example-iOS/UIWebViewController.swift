@@ -21,8 +21,7 @@ class UIWebViewController: UINavigationController,UIWebViewDelegate {
         webView = UIWebView(frame: self.view.bounds)
         self.view.addSubview(webView!)
         WebViewJavascriptBridge.enableLogging()
-        
-        bridge = WebViewJavascriptBridge.bridge(forWebView: webView) as? WebViewJavascriptBridge
+        bridge = WebViewJavascriptBridge.bridge(forWebView: webView!)
         bridge?.webViewDelegate = self
         renderButton(webView!)
         loadExampleApp(webView!)
