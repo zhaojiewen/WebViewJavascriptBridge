@@ -232,15 +232,9 @@ public class WebViewJavascriptBridgeBase: NSObject {
     }
     
     private func _dispatch(message:WVJBMessage) {
-        var messageJSON = _serialize(message: message, pretty: false) ?? ""
-        _log(action: "SEND", json: messageJSON)
-        messageJSON = messageJSON.replacingOccurrences(of: "\\", with: "\\\\")
-        messageJSON = messageJSON.replacingOccurrences(of: "\"", with: "\\\"")
-        messageJSON = messageJSON.replacingOccurrences(of: "\'", with: "\\\'")
-        messageJSON = messageJSON.replacingOccurrences(of: "\n", with: "\\n")
-        messageJSON = messageJSON.replacingOccurrences(of: "\r", with: "\\r")
-        messageJSON = messageJSON.replacingOccurrences(of: "\u{2028}", with: "\\u{2028}")
-        messageJSON = messageJSON.replacingOccurrences(of: "\u{2029}", with: "\\u{2029}")
+        _log(action: "SEND", json: message)
+        var messageJSON = _serialize(message: message, pretty: false, base64: true) ?? ""
+        
         
         let javascriptCommand = "WebViewJavascriptBridge._handleMessageFromObjC('\(messageJSON)');"
         DispatchQueue.main.async{
@@ -248,11 +242,26 @@ public class WebViewJavascriptBridgeBase: NSObject {
         }
     }
     
-    private func _serialize(message:Any, pretty:Bool) ->String? {
+    private func _serialize(message:Any, pretty:Bool, base64:Bool = false) ->String? {
         
         do {
             let messageData = try JSONSerialization.data(withJSONObject: message, options: pretty ? JSONSerialization.WritingOptions.prettyPrinted : [])
-            return String(data:messageData , encoding: String.Encoding.utf8)
+            var utf8Message = String(data:messageData , encoding: String.Encoding.utf8)
+            
+            //https://forums.developer.apple.com/thread/45643
+
+            if base64 {
+                utf8Message = utf8Message?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+                
+                return utf8Message?.data(using: .utf8)?.base64EncodedString(options: [])
+            }else {
+                return utf8Message
+            }
+            
+            
+            
+            
+    
 
         }
         catch let error {
@@ -262,7 +271,13 @@ public class WebViewJavascriptBridgeBase: NSObject {
     }
     
     private func _deserialize(messageJSON:String) -> Array<Any>? {
-        if let messagaData = messageJSON.data(using:.utf8) {
+        
+        let base64DecodedData =  Data(base64Encoded: messageJSON, options:.ignoreUnknownCharacters)
+        let urlEncodedString = String(data: base64DecodedData!, encoding: .utf8)
+        let urlDecodedString = urlEncodedString?.removingPercentEncoding
+        
+        
+        if let messagaData = urlDecodedString?.data(using:.utf8) {
             do {
                 return try JSONSerialization.jsonObject(with:messagaData , options: .allowFragments) as? Array<Any>
             }

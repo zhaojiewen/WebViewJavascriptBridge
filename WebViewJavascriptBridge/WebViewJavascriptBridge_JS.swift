@@ -81,7 +81,10 @@ function _doSend(message, responseCallback) {
 
 function _fetchQueue() {
     var messageQueueString = JSON.stringify(sendMessageQueue);
+    messageQueueString = window.btoa(window.encodeURIComponent(messageQueueString))
+
     sendMessageQueue = [];
+
     return messageQueueString;
 }
 
@@ -93,7 +96,10 @@ function _dispatchMessageFromObjC(messageJSON) {
     }
 
     function _doDispatchMessageFromObjC() {
-        var message = JSON.parse(messageJSON);
+        var decodedData = window.decodeURIComponent(window.atob(messageJSON));
+        console.log(decodedData)
+        var message = JSON.parse(decodedData);
+        console.log(message)
         var messageHandler;
         var responseCallback;
 
