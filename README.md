@@ -40,18 +40,23 @@ bridge = WKWebViewJavascriptBridge.bridge(forWebView: webView!)
 
 ```
 
-2) Register a handler in Swift, and call a JS handler:
+2) Register a handler in Swift, and call a JS handler: 
+	
 
 ```Swift
 bridge?.registerHandler(handlerName: "Swift Echo", handler: { (data, responseCallback) in
 print("Swift Echo called with: \(String(describing: data))")
+// Be careful Circle Referrence
 responseCallback(data)
 })
 
 bridge?.callHandler(handlerName: "JS Echo", data: nil, responseCallback: { (data) in
+//  Circle Referrence could not happen
 print("Swift received response\(String(describing: data))")
 })
 ```
+
+
 
 4) Copy and paste `setupWebViewJavascriptBridge` into your JS:
 
