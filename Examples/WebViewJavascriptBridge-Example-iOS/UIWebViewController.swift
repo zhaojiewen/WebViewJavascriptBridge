@@ -28,6 +28,10 @@ class UIWebViewController: UINavigationController,UIWebViewDelegate {
         configBridge()
     }
     
+    deinit {
+        print("---------")
+    }
+    
     func renderButton(_ webView:UIWebView) {
         
         let font = UIFont(name: "HelveticaNeue", size: 11)
@@ -76,8 +80,7 @@ class UIWebViewController: UINavigationController,UIWebViewDelegate {
     @objc
     func callHandler(sender:Any)  {
         let data = ["foo":"before ready\' \\ \" \n  \r 徐海青😊"]
-        bridge?.callHandler(handlerName: "testJavascriptHandler", data: data, responseCallback: { (data) in
-            
+        bridge?.callHandler(handlerName: "testJavascriptHandler", data: data, responseCallback: {(data) in
             print("testJavascriptHandler responded: \(data)")
         })
     }
@@ -93,9 +96,9 @@ class UIWebViewController: UINavigationController,UIWebViewDelegate {
     }
     
     func configBridge(){
-        bridge?.registerHandler(handlerName: "testObjcCallback", handler: { (data, responseBack) in
+        bridge?.registerHandler(handlerName: "testSwiftCallback", handler: {[unowned self] (data, responseBack) in
             print("testObjcCallback called: \(String(describing: data))")
-            responseBack(1111111111)
+            responseBack(1024)
         })
         bridge?.callHandler(handlerName: "testJavascriptHandler", data: ["foo":"before ready\' \\ \" \n  \r 😊"])
     }

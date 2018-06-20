@@ -30,7 +30,7 @@ public class WKWebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProto
     public typealias B_WebView = WKWebView
     public typealias Bridge = WKWebViewJavascriptBridge
     
-    private weak var _webView : WKWebView?
+    private weak var _webView : B_WebView?
     public weak var webViewDelegate : AnyObject?
     var _uniqueId : Int = 0
     var _base : WebViewJavascriptBridgeBase?
@@ -47,8 +47,8 @@ public class WKWebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProto
         _base!.reset()
     }
     
-    public func _setupInstance(_ webView:Any) {
-        _webView = webView as! WKWebView
+    public func setupInstance(_ webView:Any) {
+        _webView = (webView as! WKWebViewJavascriptBridge.B_WebView)
         _webView!.navigationDelegate = self
         _base = WebViewJavascriptBridgeBase()
         _base!.delegate = self

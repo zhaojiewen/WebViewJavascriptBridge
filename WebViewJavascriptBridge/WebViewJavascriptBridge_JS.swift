@@ -40,7 +40,7 @@ window.WebViewJavascriptBridge = {
     callHandler: callHandler,
     disableJavscriptAlertBoxSafetyTimeout: disableJavscriptAlertBoxSafetyTimeout,
     _fetchQueue: _fetchQueue,
-    _handleMessageFromObjC: _handleMessageFromObjC
+    _handleMessageFromSwift: _handleMessageFromSwift
 };
 
 var messagingIframe;
@@ -82,20 +82,18 @@ function _doSend(message, responseCallback) {
 function _fetchQueue() {
     var messageQueueString = JSON.stringify(sendMessageQueue);
     messageQueueString = window.btoa(window.encodeURIComponent(messageQueueString))
-
     sendMessageQueue = [];
-
     return messageQueueString;
 }
 
-function _dispatchMessageFromObjC(messageJSON) {
+function _dispatchMessageFromSwift(messageJSON) {
     if (dispatchMessagesWithTimeoutSafety) {
-        setTimeout(_doDispatchMessageFromObjC);
+        setTimeout(_doDispatchMessageFromSwift);
     } else {
-        _doDispatchMessageFromObjC();
+        _doDispatchMessageFromSwift();
     }
 
-    function _doDispatchMessageFromObjC() {
+    function _doDispatchMessageFromSwift() {
         var decodedData = window.decodeURIComponent(window.atob(messageJSON));
         console.log(decodedData)
         var message = JSON.parse(decodedData);
@@ -120,7 +118,7 @@ function _dispatchMessageFromObjC(messageJSON) {
 
             var handler = messageHandlers[message.handlerName];
             if (!handler) {
-                console.log("WebViewJavascriptBridge: WARNING: no handler for message from ObjC:", message);
+                console.log("WebViewJavascriptBridge: WARNING: no handler for message from Swift:", message);
             } else {
                 handler(message.data, responseCallback);
             }
@@ -128,8 +126,8 @@ function _dispatchMessageFromObjC(messageJSON) {
     }
 }
 
-function _handleMessageFromObjC(messageJSON) {
-    _dispatchMessageFromObjC(messageJSON);
+function _handleMessageFromSwift(messageJSON) {
+    _dispatchMessageFromSwift(messageJSON);
 }
 
 messagingIframe = document.createElement('iframe');

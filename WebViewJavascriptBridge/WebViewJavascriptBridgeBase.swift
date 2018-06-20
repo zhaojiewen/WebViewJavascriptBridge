@@ -38,10 +38,11 @@ public protocol WebViewJavascriptBridgeAPIProtocol : NSObjectProtocol {
     associatedtype Bridge:NSObject,WebViewJavascriptBridgeAPIProtocol
     associatedtype B_WebView
     
+    static func bridge(forWebView webView:Self.B_WebView) -> Bridge
     static func enableLogging() -> Void
     static func setLogMax(length:Int)
     
-    func _setupInstance(_ webView:Any)
+    func setupInstance(_ webView:Any)
     func callHandler(handlerName:String?)
     func callHandler(handlerName:String?, data:Any?)
     func callHandler(handlerName:String?, data:Any?,responseCallback:WVJBResponseCallback?)
@@ -52,10 +53,11 @@ public protocol WebViewJavascriptBridgeAPIProtocol : NSObjectProtocol {
     var webViewDelegate:AnyObject? {get set}
 
 }
+
 extension WebViewJavascriptBridgeAPIProtocol {
-    public static func bridge(forWebView webView:B_WebView) -> Bridge{
+    public static func bridge(forWebView webView:Self.B_WebView) -> Bridge{
         let bridge = Self.Bridge()
-        bridge._setupInstance(webView)
+        bridge.setupInstance(webView)
         return bridge
     }
 }
@@ -110,7 +112,7 @@ public class WebViewJavascriptBridgeBase: NSObject {
         }
         if responseCallback != nil {
             _uniqueId += 1
-            let callbackId = "objc_cb_\(_uniqueId)"
+            let callbackId = "swift_cb_\(_uniqueId)"
             
             responseCallbacks?[callbackId] = responseCallback
             message["callbackId"] = callbackId
@@ -124,7 +126,7 @@ public class WebViewJavascriptBridgeBase: NSObject {
     
     public func flush(messageQueue:String?) {
         guard let messageQueueString:String = messageQueue, messageQueueString.count > 0 else {
-            print("WebViewJavascriptBridge: WARNING: ObjC got nil while fetching the message queue JSON from webview. This can happen if the WebViewJavascriptBridge JS is not currently present in the webview, e.g if the webview just loaded a new page.")
+            print("WebViewJavascriptBridge: WARNING: Swift got nil while fetching the message queue JSON from webview. This can happen if the WebViewJavascriptBridge JS is not currently present in the webview, e.g if the webview just loaded a new page.")
             return
         }
         
@@ -149,10 +151,6 @@ public class WebViewJavascriptBridgeBase: NSObject {
                 }
                 if let callbackId = jb_message["callbackId"] {
                     responseCallback = {responseData in
-                        var msg_responseData = responseData
-                        if msg_responseData == nil {
-                            msg_responseData = "null"
-                        }
                         let msg : WVJBMessage = ["responseId":callbackId,"responseData":responseData ?? ""]
                         self._queue(message: msg)
                     }
@@ -218,14 +216,12 @@ public class WebViewJavascriptBridgeBase: NSObject {
     //Private
     //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     private func _evaluateJavascript(javascriptCommand:String) {
-        if delegate != nil {
-            delegate?._evaluateJavascript(javascriptCommand)
-        }
+        delegate?._evaluateJavascript(javascriptCommand)
     }
     
     private func _queue(message:WVJBMessage) {
         if startupMessageQueue != nil {
-            startupMessageQueue?.append(message)
+            startupMessageQueue!.append(message)
         }else {
             _dispatch(message:message)
         }
@@ -233,10 +229,9 @@ public class WebViewJavascriptBridgeBase: NSObject {
     
     private func _dispatch(message:WVJBMessage) {
         _log(action: "SEND", json: message)
-        var messageJSON = _serialize(message: message, pretty: false, base64: true) ?? ""
+        let messageJSON = _serialize(message: message, pretty: false, base64: true) ?? ""
         
-        
-        let javascriptCommand = "WebViewJavascriptBridge._handleMessageFromObjC('\(messageJSON)');"
+        let javascriptCommand = "WebViewJavascriptBridge._handleMessageFromSwift('\(messageJSON)');"
         DispatchQueue.main.async{
             self._evaluateJavascript(javascriptCommand: javascriptCommand)
         }
@@ -246,28 +241,21 @@ public class WebViewJavascriptBridgeBase: NSObject {
         
         do {
             let messageData = try JSONSerialization.data(withJSONObject: message, options: pretty ? JSONSerialization.WritingOptions.prettyPrinted : [])
+            
             var utf8Message = String(data:messageData , encoding: String.Encoding.utf8)
             
-            //https://forums.developer.apple.com/thread/45643
-
             if base64 {
+                //solve messy code by Non-ASCII Characters
                 utf8Message = utf8Message?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-                
                 return utf8Message?.data(using: .utf8)?.base64EncodedString(options: [])
             }else {
                 return utf8Message
             }
-            
-            
-            
-            
-    
-
         }
         catch let error {
             print(error)
+            return nil
         }
-        return nil
     }
     
     private func _deserialize(messageJSON:String) -> Array<Any>? {
@@ -275,7 +263,6 @@ public class WebViewJavascriptBridgeBase: NSObject {
         let base64DecodedData =  Data(base64Encoded: messageJSON, options:.ignoreUnknownCharacters)
         let urlEncodedString = String(data: base64DecodedData!, encoding: .utf8)
         let urlDecodedString = urlEncodedString?.removingPercentEncoding
-        
         
         if let messagaData = urlDecodedString?.data(using:.utf8) {
             do {

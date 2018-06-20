@@ -102,7 +102,7 @@ public class WebViewJavascriptBridge: NSObject,WebViewJavascriptBridgeAPIProtoco
         _base = nil
     }
     
-    public func _setupInstance(_ webView: Any) {
+    public func setupInstance(_ webView: Any) {
         _platformSpecificSetup(webView as! WVJB_WEBVIEW_TYPE)
     }
     
